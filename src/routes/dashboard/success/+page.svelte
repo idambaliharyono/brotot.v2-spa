@@ -1,0 +1,1 @@
+<h1 class="text-4xl text-green-800">New Member Successfully Registered</h1>
