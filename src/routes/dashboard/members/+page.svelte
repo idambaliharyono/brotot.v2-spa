@@ -1,6 +1,8 @@
 <script lang='ts'>
+	import { error } from "@sveltejs/kit";
+
     export let data;
-    const { membershipStatus, membershipError } = data
+    const { membershipPromise } = data
 
     async function handleRenewMembership() {
     }
@@ -22,16 +24,25 @@
     }
 
 </script>
-{#if membershipError}
-    <p>Error loading data</p>
-{:else}
+{#await data.membershipPromise}
+<div class="flex justify-center items-center min-h-screen">
+    <div class="flex w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+    </div>    
+
+</div>
+{:then membershipPromise} 
 
     <div class="flex flex-wrap gap-10 align-middle justify-center">
-    {#each membershipStatus as member }
+    {#each membershipPromise as member }
 
         <div class="card bg-black sm:w-1/3 lg:w-1/4 shadow-sm">
             <figure>
                 <img
+                loading="lazy"
                 src={toWebp(member.photo_url)}
                 alt={`${member.nick_name}'s photo`} 
                 class="w-4/5 aspect-3/4 object-cover rounded-2xl mt-8"/>
@@ -57,8 +68,9 @@
 
     {/each}
     </div>
-{/if}
-
+{:catch err}
+<p class="error">Error: {err.message}</p>
+{/await}
 
 <dialog bind:this={modal} class="modal">
     <div class="modal-box">

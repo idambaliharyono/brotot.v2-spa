@@ -176,7 +176,7 @@
 
 <style global>
     .form-field {
-        @apply flex flex-col w-4/5;
+        @apply flex flex-col w-4/5 align-middle;
     }
     .form-field-group {
         @apply flex;
