@@ -1,23 +1,37 @@
 <script>
 	import { goto } from "$app/navigation";
-	import { supabase, user } from "$lib/helper";
-    import { page } from "$app/stores"
+	import { supabase } from "$lib/helper";
+  import { page } from "$app/stores"
+	import { clearAllData, initializeAuth, isLoading, loadAllData, user } from "$lib/globalState";
+  import { Members, Transactions, MembershipStatus } from "$lib/globalState";
+	import { get } from "svelte/store";
 
     let { children } = $props();
-    
+    let dataLoaded = false
     $effect(() => {
-    if ($user === false) goto('/')
+      if ($isLoading) return
+      console.log('user email', $user?.email)
+      if (!$user) {
+        goto('/')
+      } 
+      if (!dataLoaded){
+        loadAllData('dashboard/+layout'); 
+        dataLoaded = true
+      } else {console.log('data loaded')}
     })
 
 	async function handleLogout() {
 		await supabase.auth.signOut();
+    clearAllData()
+    goto('/')
+
 	}
 </script>
 
 
 <div class="drawer lg:drawer-open">
   <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col items-center justify-center">
+  <div class="drawer-content flex flex-col ">
     <!-- <label for="my-drawer-3" class="btn drawer-button lg:hidden">
       Open drawer
     </label> -->
@@ -31,9 +45,9 @@
       <!-- Sidebar content here -->
       <li><a href="/dashboard">Home</a></li>
       <li><a href="/dashboard/register">Register new member</a></li>
-      <li><a href="/dashboard/members">Memberlist</a></li>
+      <li><a href="/dashboard/members2">Memberlist</a></li>
     </ul>
-    <button class="btn btn-error mt-4 w-3/4 mx-auto" onclick={handleLogout}>Logout</button>
+    <button class="btn btn-error mt-4 w-3/4 mx-auto" onclick={()=>handleLogout()}>Logout</button>
     </div>
   </div>
 </div>
@@ -48,12 +62,12 @@
     <span class="dock-label">Sign-up</span>
   </button>
   
-  <button onclick={()=>goto('/dashboard/members')} class:dock-active={$page.url.pathname === '/dashboard/members'}>
+  <button onclick={()=>goto('/dashboard/test2')} class:dock-active={$page.url.pathname === '/dashboard/members'}>
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></circle><path d="m22,13.25v-2.5l-2.318-.966c-.167-.581-.395-1.135-.682-1.654l.954-2.318-1.768-1.768-2.318.954c-.518-.287-1.073-.515-1.654-.682l-.966-2.318h-2.5l-.966,2.318c-.581.167-1.135.395-1.654.682l-2.318-.954-1.768,1.768.954,2.318c-.287.518-.515,1.073-.682,1.654l-2.318.966v2.5l2.318.966c.167.581.395,1.135.682,1.654l-.954,2.318,1.768,1.768,2.318-.954c.518.287,1.073.515,1.654.682l.966,2.318h2.5l.966-2.318c.581-.167,1.135-.395,1.654-.682l2.318.954,1.768-1.768-.954-2.318c.287-.518.515-1.073.682-1.654l2.318-.966Z" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path></g></svg>
     <span class="dock-label">Members</span>
   </button>
 
-  <button onclick={()=>goto('/dashboard/cashflow')} class:dock-active={$page.url.pathname === '/dashboard/cashflow'}>
+  <button onclick={()=> handleLogout()}>
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></circle><path d="m22,13.25v-2.5l-2.318-.966c-.167-.581-.395-1.135-.682-1.654l.954-2.318-1.768-1.768-2.318.954c-.518-.287-1.073-.515-1.654-.682l-.966-2.318h-2.5l-.966,2.318c-.581.167-1.135.395-1.654.682l-2.318-.954-1.768,1.768.954,2.318c-.287.518-.515,1.073-.682,1.654l-2.318.966v2.5l2.318.966c.167.581.395,1.135.682,1.654l-.954,2.318,1.768,1.768,2.318-.954c.518.287,1.073.515,1.654.682l.966,2.318h2.5l.966-2.318c.581-.167,1.135-.395,1.654-.682l2.318.954,1.768-1.768-.954-2.318c.287-.518.515-1.073.682-1.654l2.318-.966Z" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path></g></svg>
     <span class="dock-label">Cashflow</span>
   </button>

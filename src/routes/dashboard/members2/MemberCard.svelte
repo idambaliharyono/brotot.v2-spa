@@ -7,10 +7,12 @@
 
     const dispatch = createEventDispatcher();
 
-    function open(){
-        dispatch("openmodal", member)
+    function openRenewModal(){
+        dispatch("openrenewmodal", member)
     }
-    
+    function openEditModal(){
+        dispatch("openeditmodal", member)
+    }
 </script>
 
     <div class="card card-side bg-black shadow-sm mb-5 w-full">
@@ -32,9 +34,13 @@
         <div class="text-[10px] -mt-2">({member.full_name})</div>
         <p class="text-xs">Expired on: {member.membership_expiration} </p>
         <div class="card-actions justify-end">
-        <button class="mt-5 btn btn-primary"
-        on:click|preventDefault={open}
-        >Renew</button>
+            <button class="mt-5 btn btn-primary"
+            on:click|preventDefault={openEditModal}
+            >Edit</button>
+
+            <button class="mt-5 btn btn-primary"
+            on:click|preventDefault={openRenewModal}
+            >Renew</button>
         </div>
     </div>
 </div>

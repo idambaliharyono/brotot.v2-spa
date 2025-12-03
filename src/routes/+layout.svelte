@@ -1,10 +1,34 @@
 <script lang="ts">
-	import { supabase } from '$lib/helper';
 	import { Toaster } from 'svelte-sonner';
 	import "../app.css"
+	import { onMount } from 'svelte';
+	import { initializeAuth, user } from '$lib/globalState';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
+	export const ssr = false;
+	export const prerender = false;
 	let { children } = $props()
+	let authInitialize = false
 
+	$effect(() => {
+		if (authInitialize) return
+		else {
+			initializeAuth()
+			authInitialize = true;
+		}
+	})
+	$effect(() => {
+	
+		if (!authInitialize || $user === undefined) return;		
+
+
+		if ($page.url.pathname === '/' && $user ) {
+			goto('/dashboard')
+		} else if ($page.url.pathname.startsWith('/dashboard') && !$user) {
+			goto('/')
+		}
+	})
 </script>
 {@render children()}
 <Toaster richColors position='top-center'/>

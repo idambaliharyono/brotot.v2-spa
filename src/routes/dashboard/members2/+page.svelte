@@ -1,65 +1,109 @@
 <script lang="ts">
-	import { supabase } from "$lib/helper";
+
 	import type { membership_status } from "$lib/types";
-	import { toast } from "svelte-sonner";
 	import MemberSkeleton from "./MemberSkeleton.svelte";
 	import MemberCard from "./MemberCard.svelte";
 	import MemberNavigation from "./MemberNavigation.svelte";
 	import RenewModal from "./RenewModal.svelte";
+    import { MembershipStatus, isLoading, loadAllData } from "$lib/globalState";
+	import { string } from "zod";
+	import EditModal from "./EditModal.svelte";
+
+    export const ssr = false;
+    export const prerender = false;
 
 
-    let members = $state<membership_status[]>([]);
-    let loading = $state(true);
+    let loading = $derived($isLoading);
+    let rawMembers = $derived(Object.values($MembershipStatus)) 
 
-    $effect(() => {(async () => {
-        const { data, error } = await supabase
-            .from("membership_status")
-            .select('*')
-            .order('days_left', { ascending: false });
 
-        if (error) {toast.error('fail at supabase')};
-        members = data ?? [];
-        loading = false;
-    })();
-});
+
 // renew membership modal
-    let showModal = $state(false);
+    let showRenewModal = $state(false);
     let selectedMember = $state<membership_status | null>(null)
 
-    function openModal(member: membership_status){
+    function openRenewModal(member: membership_status){
         selectedMember = member;
-        showModal = true
+        showRenewModal = true
     }
 
-    function closeModal(){
-        showModal = false
+    function UpdateLocalMember(updated: membership_status) {
+        rawMembers = rawMembers.map(m => m.member_id === updated.member_id ? updated : m)
     }
 
+// edit member modal
+    let showEditModal = $state(false);
+
+    function openEditModal(member: membership_status){
+        selectedMember = member;
+        showEditModal = true
+    }
+
+    function EditLocalMember(updated: membership_status) {
+        rawMembers = rawMembers.map(m => m.member_id === updated.member_id ? updated : m)
+    }
+
+// helper
     function toWebp(url: string | null){
         if(!url)return "";
         return url.replace("/upload/", "/upload/f_auto,q_auto,w_900/")
     }
 
-</script>
-<MemberNavigation />
-{#if loading}
-   <div>
-       <MemberSkeleton /> 
-   </div>
-{:else}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-x-5 justify-center mx-1 place-items-center">
-        {#each members as member}
-        <MemberCard
-        {member}
-        {toWebp}
-        on:openmodal={(e) => openModal(e.detail)} />
-        {/each}
-</div>
-{/if}
+    let search = $state<string>("")
+    let memberColor = $state<"red" | "green" | "blue">("green")
+    
+    let members3 = $derived.by(() => {
+        let filteredByName = rawMembers.filter( m => {
+            const q = search.toLocaleLowerCase();
+            const full = String(m.full_name ?? "").toLocaleLowerCase();
+            const nick =(m.nick_name ?? "").toLocaleLowerCase();
 
-{#if showModal && selectedMember}
-    <RenewModal
-    {selectedMember}
-    on:close={() => showModal = false}
-     />
-{/if}
+            return full.includes(q) || nick.includes(q); 
+        
+        })
+        
+        let filteredByColor = filteredByName.filter( m => {
+            if (!memberColor) return true ;
+            const color = String(m.color ?? "").toLocaleLowerCase();
+            
+            return color.includes(memberColor.toLocaleLowerCase())
+})
+    return filteredByColor
+    })
+</script>
+
+
+
+    <MemberNavigation bind:search bind:memberColor/>
+    {#if loading}
+       <div>
+           <MemberSkeleton />
+       </div>
+    {:else}
+<div class="flex flex-col items-center justify-center">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-5 justify-center mx-1 place-items-center">
+            {#each members3 as member}
+            <MemberCard
+            {member}
+            {toWebp}
+            on:openrenewmodal={(e) => openRenewModal(e.detail)}
+            on:openeditmodal={(e) => openEditModal(e.detail)} />
+            {/each}
+    </div>
+</div>
+    {/if}
+    
+    {#if showRenewModal && selectedMember}
+        <RenewModal
+        {selectedMember}
+        on:close={() => showRenewModal = false}
+        on:updated={(e) => UpdateLocalMember(e.detail)}
+         />
+    {/if}
+    {#if showEditModal && selectedMember}
+        <EditModal
+        {selectedMember}
+        on:close={() => showEditModal = false}
+        on:updated={(e) => EditLocalMember(e.detail)}
+         />
+    {/if}
