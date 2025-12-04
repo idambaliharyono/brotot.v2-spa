@@ -6,6 +6,8 @@
   import { Members, Transactions, MembershipStatus } from "$lib/globalState";
 	import { get } from "svelte/store";
 
+    export const ssr = false;
+    export const csr = true;
     let { children } = $props();
     let dataLoaded = false
     $effect(() => {
