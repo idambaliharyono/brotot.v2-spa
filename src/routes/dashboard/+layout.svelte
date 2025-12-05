@@ -59,13 +59,9 @@
 </script>
 
 
-<div class="drawer lg:drawer-open">
+<!-- <div class="drawer lg:drawer-open">
   <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col ">
-    <!-- <label for="my-drawer-3" class="btn drawer-button lg:hidden">
-      Open drawer
-    </label> -->
-    <!-- Page content here -->
     <main>
       {#if dataLoaded && $user}
         {@render children()}
@@ -78,7 +74,6 @@
     <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
     <div class="flex flex-col bg-base-200 min-h-full w-80  p-4">
     <ul class="menu flex-1 ">
-      <!-- Sidebar content here -->
       <li><a href="/dashboard">Home</a></li>
       <li><a href="/dashboard/register">Register new member</a></li>
       <li><a href="/dashboard/members2">Memberlist</a></li>
@@ -86,8 +81,33 @@
     <button class="btn btn-error mt-4 w-3/4 mx-auto" onclick={()=>handleLogout()}>Logout</button>
     </div>
   </div>
-</div>
-<div class="dock bg-neutral text-neutral-content lg:hidden">
+</div> -->
+
+<!-- <div class="dock bg-neutral text-neutral-content lg:hidden">
+</div> -->
+{#if dataLoaded && $user}
+  <!-- Desktop: Drawer layout -->
+  <div class="hidden lg:flex">
+    <div class="drawer lg:drawer-open">
+      <!-- ... desktop drawer ... -->
+    </div>
+  </div>
+  
+  <!-- Mobile: Simple layout without drawer -->
+  <div class="lg:hidden">
+    <div class="p-4">
+      <!-- Simple mobile header -->
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">Dashboard</h1>
+        <button class="btn btn-sm" onclick={() => handleLogout()}>Logout</button>
+      </div>
+      
+      <!-- Mobile content -->
+      <main>{@render children()}</main>
+      
+      <!-- Mobile bottom nav (your dock) -->
+      <div class="dock bg-neutral text-neutral-content fixed bottom-0 left-0 right-0">
+        <!-- ... your dock buttons ... -->
   <button onclick={()=>goto('/dashboard/')} class:dock-active={$page.url.pathname === '/dashboard'}>
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><polyline points="1 11 12 2 23 11" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></polyline><path d="m5,13v7c0,1.105.895,2,2,2h10c1.105,0,2-.895,2-2v-7" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path><line x1="12" y1="22" x2="12" y2="18" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></line></g></svg>
     <span class="dock-label">Home</span>
@@ -98,7 +118,7 @@
     <span class="dock-label">Sign-up</span>
   </button>
   
-  <button onclick={()=>goto('/dashboard/test2')} class:dock-active={$page.url.pathname === '/dashboard/members'}>
+  <button onclick={()=>goto('/dashboard/members2')} class:dock-active={$page.url.pathname === '/dashboard/members'}>
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></circle><path d="m22,13.25v-2.5l-2.318-.966c-.167-.581-.395-1.135-.682-1.654l.954-2.318-1.768-1.768-2.318.954c-.518-.287-1.073-.515-1.654-.682l-.966-2.318h-2.5l-.966,2.318c-.581.167-1.135.395-1.654.682l-2.318-.954-1.768,1.768.954,2.318c-.287.518-.515,1.073-.682,1.654l-2.318.966v2.5l2.318.966c.167.581.395,1.135.682,1.654l-.954,2.318,1.768,1.768,2.318-.954c.518.287,1.073.515,1.654.682l.966,2.318h2.5l.966-2.318c.581-.167,1.135-.395,1.654-.682l2.318.954,1.768-1.768-.954-2.318c.287-.518.515-1.073.682-1.654l2.318-.966Z" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path></g></svg>
     <span class="dock-label">Members</span>
   </button>
@@ -107,4 +127,9 @@
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></circle><path d="m22,13.25v-2.5l-2.318-.966c-.167-.581-.395-1.135-.682-1.654l.954-2.318-1.768-1.768-2.318.954c-.518-.287-1.073-.515-1.654-.682l-.966-2.318h-2.5l-.966,2.318c-.581.167-1.135.395-1.654.682l-2.318-.954-1.768,1.768.954,2.318c-.287.518-.515,1.073-.682,1.654l-2.318.966v2.5l2.318.966c.167.581.395,1.135.682,1.654l-.954,2.318,1.768,1.768,2.318-.954c.518.287,1.073.515,1.654.682l.966,2.318h2.5l.966-2.318c.581-.167,1.135-.395,1.654-.682l2.318.954,1.768-1.768-.954-2.318c.287-.518.515-1.073.682-1.654l2.318-.966Z" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path></g></svg>
     <span class="dock-label">Cashflow</span>
   </button>
-</div>
+      </div>
+    </div>
+  </div>
+{:else}
+  <!-- Loading -->
+{/if}

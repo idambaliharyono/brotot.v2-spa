@@ -23,12 +23,13 @@
         alt={member.nick_name} />
     </figure>
     <div class="card-body">
-        <h2 class="card-title">{member.nick_name}
+        <h2 class="card-title">
+            <span>{member.nick_name}</span> 
             <div class="badge text-white text-xs" 
-                        class:bg-red-400={member.color === 'red'}
-                        class:bg-yellow-400={member.color === 'yellow'}
-                        class:bg-green-400={member.color === 'green'}
-            >{member.days_left} days left
+                class:bg-red-400={member.color === 'red'}
+                class:bg-yellow-400={member.color === 'yellow'}
+                class:bg-green-400={member.color === 'green'}>
+                {member.days_left} days left
             </div>
         </h2>
         <div class="text-[10px] -mt-2">({member.full_name})</div>

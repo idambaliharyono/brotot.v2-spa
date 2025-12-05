@@ -6,9 +6,7 @@
 	import MemberNavigation from "./MemberNavigation.svelte";
 	import RenewModal from "./RenewModal.svelte";
     import { MembershipStatus, isLoading, loadAllData } from "$lib/globalState";
-	import { object, string } from "zod";
 	import EditModal from "./EditModal.svelte";
-	import { effect } from "zod/v3";
 	import { onMount } from "svelte";
 
 
