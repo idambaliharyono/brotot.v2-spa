@@ -6,16 +6,42 @@
 	import MemberNavigation from "./MemberNavigation.svelte";
 	import RenewModal from "./RenewModal.svelte";
     import { MembershipStatus, isLoading, loadAllData } from "$lib/globalState";
-	import { string } from "zod";
+	import { object, string } from "zod";
 	import EditModal from "./EditModal.svelte";
+	import { effect } from "zod/v3";
+	import { onMount } from "svelte";
 
-    export const ssr = false;
-    export const prerender = false;
 
 
     let loading = $derived($isLoading);
     let rawMembers = $derived(Object.values($MembershipStatus)) 
+    let memberReady = $state(false)
 
+    onMount(() => {
+        console.log('===Members Page Mounted==')
+        console.log('MembershipStatus store:', $MembershipStatus)
+        console.log('typeof:', typeof $MembershipStatus)
+        console.log(Object.keys($MembershipStatus).length)
+        const hasMembers = Object.keys($MembershipStatus).length > 0
+
+        if (hasMembers) {
+            memberReady = true
+        } else {
+            const checkInterval = setInterval(() => {
+               if (Object.keys($MembershipStatus).length >0) {
+                memberReady = true;
+                clearInterval(checkInterval)
+               } 
+            }, 100);
+
+            setTimeout(() => {
+               clearInterval(checkInterval) 
+               if (!memberReady) {
+                console.error('failed loading data after 5s')
+               }
+            }, 5000)
+        }
+    })
 
 
 // renew membership modal
@@ -75,11 +101,8 @@
 
 
     <MemberNavigation bind:search bind:memberColor/>
-    {#if loading}
+    {#if Object.keys($MembershipStatus).length > 0}
        <div>
-           <MemberSkeleton />
-       </div>
-    {:else}
 <div class="flex flex-col items-center justify-center">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-5 justify-center mx-1 place-items-center">
             {#each members3 as member}
@@ -91,6 +114,9 @@
             {/each}
     </div>
 </div>
+       </div>
+    {:else}
+           <MemberSkeleton />
     {/if}
     
     {#if showRenewModal && selectedMember}

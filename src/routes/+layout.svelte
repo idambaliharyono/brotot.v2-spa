@@ -6,8 +6,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
-	export const ssr = false;
-	export const prerender = false;
 	let { children } = $props()
 	let authInitialize = false
 

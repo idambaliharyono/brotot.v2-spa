@@ -5,28 +5,56 @@
 	import { clearAllData, initializeAuth, isLoading, loadAllData, user } from "$lib/globalState";
   import { Members, Transactions, MembershipStatus } from "$lib/globalState";
 	import { get } from "svelte/store";
+	import { error } from "@sveltejs/kit";
+	import { onMount } from "svelte";
 
-    export const ssr = false;
-    export const csr = true;
     let { children } = $props();
-    let dataLoaded = false
+    let dataLoaded = $state(false)
+    let authChecking = $state(false)
     $effect(() => {
-      if ($isLoading) return
-      console.log('user email', $user?.email)
-      if (!$user) {
+      if($isLoading || authChecking) return
+     
+      console.log('auth check, is user exist?',!!$user?.email)
+      
+      if(!$user) {
+        console.log('no user detected')
         goto('/')
-      } 
-      if (!dataLoaded){
-        loadAllData('dashboard/+layout'); 
-        dataLoaded = true
-      } else {console.log('data loaded')}
+      }
+    })
+
+    onMount(() => {
+        // if (!$user) {
+        //   goto('/')
+        // } 
+        if ($isLoading || !$user || dataLoaded || authChecking) return
+        
+        console.log('loading data for user:', $user?.email)
+
+        if (!$Members) {
+          dataLoaded = true
+          console.log('data already exist')
+            dataLoaded = false 
+            return
+          } 
+        loadAllData('dashboard/layout').then(() => {
+          console.log('data loaded Successfully')
+          dataLoaded = true
+        }).catch(error => {
+          console.log('failed loading data', error)
+        });
     })
 
 	async function handleLogout() {
+    console.log('Logging out:', $user?.email)
+    
+    authChecking = true
+
 		await supabase.auth.signOut();
     clearAllData()
-    goto('/')
 
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100)
 	}
 </script>
 
@@ -38,7 +66,13 @@
       Open drawer
     </label> -->
     <!-- Page content here -->
-    <main>{@render children()}</main>
+    <main>
+      {#if dataLoaded && $user}
+        {@render children()}
+      {:else}
+        <h1>loading data</h1>
+      {/if}
+    </main>
   </div>
   <div class="drawer-side">
     <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>

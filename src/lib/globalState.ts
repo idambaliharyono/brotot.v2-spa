@@ -7,9 +7,9 @@ import { _never } from 'zod/v4/core';
 import { get } from 'svelte/store';
 
 export const user = writable<User | null>(null);
-export const Members = writable<Record<number, Member>>();
-export const Transactions = writable<Record<number, Transaction>>();
-export const MembershipStatus = writable<Record<number, membership_status>>();
+export const Members = writable<Record<number, Member>>({});
+export const Transactions = writable<Record<number, Transaction>>({});
+export const MembershipStatus = writable<Record<number, membership_status>>({});
 export const isLoading = writable(false);
 
 let dataLoaded = false;
