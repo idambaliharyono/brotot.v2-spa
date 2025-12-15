@@ -103,8 +103,28 @@
         }
 
     }
+    let step = $state(2);
+    const totalStep = 3;
 
+    function nextStep(){
+        if (step<totalStep) step++
+    }
+    function prevStep(){
+        if (step>1) step--
+    }
 </script>
+<div class="flex items-center justify-between mb-6">
+    {#each [1,2,3] as s}
+    <div class="flex-1 text-center">
+        <div class="h-2 rounded-full mx-2 bg-gray-400"
+            class:bg-green-500={step >= s}></div>
+        <span class="text-sm"
+            class:font-bold={step >= s}>
+            {s === 1? 'Personal' : s === 2 ? 'Technical' : 'other'}
+        </span>
+    </div> 
+    {/each}
+</div>
 <div class="w-full">
 <form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-5 mx-auto ">
     <label for="profil">Display Picture</label>
