@@ -22,7 +22,7 @@
       }
     })
 
-    onMount(() => {
+    $effect(() => {
         // if (!$user) {
         //   goto('/')
         // } 

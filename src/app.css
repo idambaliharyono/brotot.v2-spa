@@ -1,4 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 @import 'tailwindcss';
+
+@theme {
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-heading: 'League Spartan', sans-serif;
+
+    --font-family-primary: 'League Spartan',sans-serif;
+    --font-family-secondary: 'Inter', system-ui, sans-serif;
+}
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin 'daisyui';
+
+.font-primary {
+    font-family: var(--font-family-primary);
+}
+.font-secondary {
+    font-family: var(--font-family-secondary);
+}
