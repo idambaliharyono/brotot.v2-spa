@@ -35,8 +35,8 @@
 			<label class="pl-2.5 label font-family-secondary " for="password">Password</label>
 			<input id="password" type="password" class="input-lg px-4 py-4 rounded-3xl text-black" placeholder="Password" bind:value={password} />
 		</fieldset>
-		<button class="btn mt-4 px-30 py-2 rounded-xl font-bold font-family-secondary text-white
-		 border-2 border-white bg-transparent hover:bg-white/10
+		<button class="btn mt-4 px-30 py-5 rounded-xl font-bold font-family-secondary text-white
+		 border-2 border-white bg-transparent hover:bg-white/10 text-lg 
 		  active:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40 transition" type="submit">LOGIN</button>
 	</form>
 </div>

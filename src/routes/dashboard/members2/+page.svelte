@@ -8,6 +8,7 @@
     import { MembershipStatus, isLoading, loadAllData } from "$lib/globalState";
 	import EditModal from "./EditModal.svelte";
 	import { onMount } from "svelte";
+	import { pageTitle } from "$lib/stores/title";
 
 
 
@@ -16,6 +17,7 @@
     let memberReady = $state(false)
 
     onMount(() => {
+        pageTitle.set('MEMBERS')
         console.log('===Members Page Mounted==')
         console.log('MembershipStatus store:', $MembershipStatus)
         console.log('typeof:', typeof $MembershipStatus)

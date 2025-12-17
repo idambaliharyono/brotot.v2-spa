@@ -2,21 +2,23 @@
 	import { goto } from "$app/navigation";
 	import { supabase, uploadToCloudinary } from "$lib/helper";
 	import { registerSchema } from "$lib/schemas/registerSchemas";
+	import { pageTitle } from "$lib/stores/title";
+	import { onMount } from "svelte";
 
-    let nickName = '';
-    let fullName = '';
-    let gender = '';
-    let birthdate = '';
-    let phoneNumber = '';
-    let medicalInfo = '';
-    let fitnessGoal = '';
-    let preferedWorkoutTime = '';
-    let photo : File |null = null;
-    let message = '';
-    let loadingCloudinary = false;
-    let loadingSupabase = false;
-    let photoUrl: string | null = null
-    let paymentMethod = ""
+    let nickName = $state('');
+    let fullName = $state('');
+    let gender = $state('');
+    let birthdate = $state('');
+    let phoneNumber = $state('');
+    let medicalInfo = $state('');
+    let fitnessGoal = $state('');
+    let preferedWorkoutTime = $state('');
+    let photo : File |null = $state(null);
+    let message = $state('');
+    let loadingCloudinary = $state(false);
+    let loadingSupabase = $state(false);
+    let photoUrl: string | null = $state(null) 
+    let paymentMethod = $state('')
     
     async function handleSubmit() {
         const formData = {
@@ -112,7 +114,11 @@
     function prevStep(){
         if (step>1) step--
     }
+    onMount(() => {
+        pageTitle.set('REGISTER')
+    })
 </script>
+
 <div class="flex items-center justify-between mb-6">
     {#each [1,2,3] as s}
     <div class="flex-1 text-center">
@@ -126,15 +132,9 @@
     {/each}
 </div>
 <div class="w-full">
-<form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-5 mx-auto ">
+<form onsubmit={handleSubmit} class="flex flex-col gap-5 mx-auto ">
     <label for="profil">Display Picture</label>
-    <input type="file" accept="image/*" id="profil"
-    on:change={(e) => {
-        const target = e.target as HTMLInputElement;
-        if (target.files && target.files.length > 0) {
-            photo = target.files[0]
-        }
-    }}>
+    <input type="file" accept="image/*" id="profil">
     <div class="form-field">
         <label for="fullname">Full Name</label>
         <input type="text" id="fullname"  bind:value={fullName} placeholder="Joni Jumawan" required>

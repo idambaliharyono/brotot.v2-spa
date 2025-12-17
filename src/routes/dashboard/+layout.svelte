@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
 	import { goto } from "$app/navigation";
 	import { supabase } from "$lib/helper";
   import { page } from "$app/stores"
@@ -7,8 +7,18 @@
 	import { get } from "svelte/store";
 	import { error } from "@sveltejs/kit";
 	import { onMount } from "svelte";
+	import Navbar from "$lib/components/Navbar.svelte";
+	import { pageTitle } from "$lib/stores/title";
+	import { NavbarTemplates } from "$lib/stores/navbar";
 
-    let { children } = $props();
+    // let { children, data } = $props();
+  const { children, data } = $props<{
+    children: () => any;
+    data: {
+      pageTitle?: string;
+    };
+  }>();
+
     let dataLoaded = $state(false)
     let authChecking = $state(false)
     $effect(() => {
@@ -56,7 +66,23 @@
       window.location.href = '/';
     }, 100)
 	}
+  let title = $state('Default')
+  let template = $state('Default')
+$effect(()=>{
+  const unsuscribeTitle =  pageTitle.subscribe(value => {
+    title = value;
+  })
+  const unsuscribeTemplate = NavbarTemplates.subscribe(value => {
+    template = value;
+  });
+
+  return () => {
+    unsuscribeTitle();
+    unsuscribeTemplate();
+  };
+})
 </script>
+  <Navbar {title} {template} /> 
 
 
 <!-- <div class="drawer lg:drawer-open">
@@ -97,11 +123,6 @@
   <div class="lg:hidden">
     <div class="p-4">
       <!-- Simple mobile header -->
-      <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl font-bold">Dashboard</h1>
-        <button class="btn btn-sm" onclick={() => handleLogout()}>Logout</button>
-      </div>
-      
       <!-- Mobile content -->
       <main>{@render children()}</main>
       

@@ -32,3 +32,5 @@ export interface Member {
 	prefered_workout: 'morning' | 'noon' | 'afternoon' | 'dusk' | 'night';
 	photo_url: string;
 }
+
+export type NavbarTemplates = 'dashboard' | 'register' | 'members';
