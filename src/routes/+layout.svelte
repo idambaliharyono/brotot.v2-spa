@@ -29,8 +29,8 @@
 	})
 </script>
 <div class="relative">
-	<div class="fixed inset-0 bg-[url(/bg.webp)] bg-cover bg-center"></div>
-	<div class="fixed inset-0 z-10 bg-black/70"></div>
+	<div class="fixed inset-0 bg-[url(/bg2.webp)] bg-cover bg-center"></div>
+	<div class="fixed inset-0 z-10 bg-black/80"></div>
 	<div class="relative inset-0 z-20">
 		{@render children()}
 	</div>
