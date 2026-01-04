@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { supabase, uploadToCloudinary } from "$lib/helper";
+	import { sendSMS, supabase, uploadToCloudinary } from "$lib/helper";
 	import { registerSchema } from "$lib/schemas/registerSchemas";
 	import { pageTitle } from "$lib/stores/title";
 	import { onMount } from "svelte";
@@ -102,6 +102,11 @@
                 }, 1000)
                 loadingSupabase=false
             }
+            const membershipExpiration = new Date(transactionPayLoad.transaction_date);
+            membershipExpiration.setDate(membershipExpiration.getDate() + 28);
+
+            const smsResult = await sendSMS(phoneNumber,nickName, membershipExpiration, 'register')
+            console.log(smsResult)
         }
 
     }
@@ -132,18 +137,18 @@
     {/each}
 </div>
 <div class="w-full">
-<form onsubmit={handleSubmit} class="flex flex-col gap-5 mx-auto ">
+<form onsubmit={handleSubmit} class="flex flex-col gap-5 mx-auto">
     <label for="profil">Display Picture</label>
     <input type="file" accept="image/*" id="profil">
     <div class="form-field">
         <label for="fullname">Full Name</label>
-        <input type="text" id="fullname"  bind:value={fullName} placeholder="Joni Jumawan" required>
+        <input type="text" id="fullname" class="text-black"  bind:value={fullName} placeholder="Joni Jumawan" required>
     </div> 
     
     <div class="form-field-group gap-5 justify-center">
         <div class="form-field">
             <label for="nickname">Nickname</label>
-            <input class="" type="text"  id="nickname" bind:value={nickName} placeholder="Joni" required>
+            <input type="text"  class="text-black" id="nickname" bind:value={nickName} placeholder="Joni" required>
         </div>
         <div class="form-field">
             <label  for="birthdate">Birth Date</label>
@@ -158,10 +163,10 @@
             <div >
                 <div class="form-field">
                     <label>
-                        <input type="radio" id="gender" value="male" bind:group={gender}/>Male
+                        <input type="radio" id="gender" value="Male" bind:group={gender}/>Male
                     </label>
                     <label>
-                        <input type="radio" id="gender" value="female" bind:group={gender}/>Female
+                        <input type="radio" id="gender" value="Female" bind:group={gender}/>Female
                     </label>
                 </div>
             </div>

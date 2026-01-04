@@ -1,0 +1,5 @@
+Login → Load All Data → Store in Global State
+    ↓
+All Components Read/Write to Global Store
+    ↓
+Manual Cache Invalidation When Needed

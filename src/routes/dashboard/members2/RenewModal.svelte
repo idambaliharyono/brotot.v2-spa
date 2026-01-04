@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from "$lib/helper";
+	import { sendSMS, supabase } from "$lib/helper";
     import type { membership_status, Transaction } from "$lib/types";
 	import { createEventDispatcher, onMount } from "svelte";
 	import { toast } from "svelte-sonner";
@@ -39,6 +39,7 @@
 
         if(trxError || !trx){
             toast.error(`${trxError}`)
+            return
         }
         toast.success(`${selectedMember.full_name}'s Membership is renewed'`)
 
@@ -50,7 +51,8 @@
         if(renewMemberError || !renewMember){
             toast.error('Falied refreshing member data. Please Refresh manually')
         }
-        
+        const smsDate = new Date(selectedMember.membership_expiration)
+        const smsResponse = sendSMS(selectedMember.phone_number, selectedMember.nick_name, smsDate ,'renewal') 
 
         dispatch("updated", renewMember);
         dispatch("close");
