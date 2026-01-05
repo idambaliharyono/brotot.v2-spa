@@ -3,7 +3,6 @@
     import type { membership_status, Transaction } from "$lib/types";
 	import { createEventDispatcher, onMount } from "svelte";
 	import { toast } from "svelte-sonner";
-	import { date } from "zod";
 
     // export let selectedMember:membership_status;
     let { selectedMember } = $props<{ selectedMember: membership_status}>()
@@ -17,7 +16,8 @@
     })
     let paymentMethod: 'bank_transfer' | 'qris' | 'cash' = "cash"
     let note = "";
-    let starDate = "";
+    // let starDate = "";
+    let starDate = $state(new Date().toISOString().split('T')[0]);
 
     async function submitRenew(e: Event) {
         e.preventDefault();
@@ -51,8 +51,8 @@
         if(renewMemberError || !renewMember){
             toast.error('Falied refreshing member data. Please Refresh manually')
         }
-        const smsDate = new Date(selectedMember.membership_expiration)
-        const smsResponse = sendSMS(selectedMember.phone_number, selectedMember.nick_name, smsDate ,'renewal') 
+        const smsDate = new Date(renewMember.membership_expiration)
+        const smsResponse =  await sendSMS(selectedMember.phone_number, selectedMember.nick_name, smsDate ,'renewal') 
 
         dispatch("updated", renewMember);
         dispatch("close");
