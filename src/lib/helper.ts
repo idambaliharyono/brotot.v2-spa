@@ -31,7 +31,7 @@ export async function sendSMS(
 	phone_number: string,
 	nick_name: string,
 	membership_expiration: Date,
-	type: 'register' | 'renewal'
+	type: 'register' | 'renewal' | 'test'
 ) {
 	const token = '5119df15543fbf8a0efa6bbb93142756';
 	const displayDate = membership_expiration.toLocaleDateString('id-ID', {
@@ -42,7 +42,9 @@ export async function sendSMS(
 	});
 	const renewalMessage = `BROTOT-GYM: Hai ${nick_name.toUpperCase()}. Terimaksih sudah memperpanjang membership anda hingga: ${displayDate}`;
 	const registeMessage = `BROTOT-GYM: Hai ${nick_name.toUpperCase()}. Terimaksih sudah bergabung di BROTOT GYM, membership anda berlaku hingga: ${displayDate}`;
-	let message = type === 'renewal' ? renewalMessage : registeMessage;
+	const testMessage = `BROTOT-GYM: Hai ${nick_name.toUpperCase()}. Ini merupakan test pesan dari BROTOT`;
+	let message =
+		type === 'renewal' ? renewalMessage : type === 'register' ? registeMessage : testMessage;
 
 	const url = `https://websms.co.id/api/smsgateway-otp?token=${token}&to=${phone_number}&msg=${message}`;
 
