@@ -103,7 +103,7 @@
     <MemberNavigation bind:search bind:memberColor/>
     {#if Object.keys($MembershipStatus).length > 0}
        <div>
-    <div class="grid grid-cols-2 lg:grid-cols-3 justify-center place-items-center">
+    <div class="grid grid-cols-2 lg:grid-cols-3 justify-center place-items-center gap-1">
             {#each members3 as member}
             <MemberCard
             {member}
