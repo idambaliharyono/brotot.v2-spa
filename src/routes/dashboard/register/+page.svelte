@@ -9,6 +9,7 @@
     let fullName = $state('');
     let gender = $state('');
     let birthdate = $state('');
+    let rawPhone = $state('')
     let phoneNumber = $state('');
     let medicalInfo = $state('');
     let fitnessGoal = $state('');
@@ -26,7 +27,7 @@
             full_name: fullName,
             gender: gender,
             birth_date: birthdate,
-            phone_number: phoneNumber,
+            phone_number: rawPhone,
             medical_info: medicalInfo,
             fitness_goal: fitnessGoal,
             prefered_workout_time: preferedWorkoutTime,
@@ -110,7 +111,7 @@
         }
 
     }
-    let step = $state(1);
+    let step = $state(2);
     const totalStep = 3;
 
     function nextStep(){
@@ -122,7 +123,48 @@
     onMount(() => {
         pageTitle.set('REGISTER')
     })
+    function capitalizeName(name: String){
+        return name
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    }    
+    function handlePhoneInput(e: any) {
+    // Get the current input
+    const input = e.target.value;
     
+    // Remove all non-digit characters
+    const digitsOnly = input.replace(/[^\d]/g, '');
+    
+    // Update rawPhone
+    rawPhone = digitsOnly;
+    
+    // IMMEDIATELY update the input field to show only digits
+    e.target.value = digitsOnly;
+    
+    // Force Svelte to update phoneNumber immediately
+    phoneNumber = digitsOnly ? `+${digitsOnly}` : '';
+    
+}
+    
+    $effect(() => {
+        if (fullName) {
+            const capitalizeFullName = capitalizeName(fullName);
+            if (capitalizeFullName !== fullName) {
+                fullName = capitalizeFullName;
+
+            }
+        }
+        if (nickName) {
+            const capitalizeNickName = capitalizeName(nickName)
+            if (capitalizeNickName !== nickName){
+                nickName = capitalizeNickName
+            }
+        }
+        phoneNumber = rawPhone ? `+${rawPhone}` : ''
+    })
+
 </script>
 
 <!-- progress step visual -->
@@ -139,41 +181,6 @@
     {/each}
 </div>
 
-<!-- <div class="card card-side bg-black shadow-sm mb-5 w-full">
-    <figure class="p-4">
-        <div class="avatar">
-            <div class="w-24 rounded-xl">
-                {#if photo}
-                <img
-                    class="aspect-square object-cover"
-                    src={URL.createObjectURL(photo)}
-                    alt='Profile preview'/>
-                {:else}
-                <div class="bg-gray-400 w-24 h-24 rounded-xl flex items-center justify-center">
-                    <span class="text-gray-500">Upload Photo!</span>
-                </div>
-                {/if} 
-                
-            </div>
-        </div>
-    </figure>
-    <div class="card-body">
-        <h2 class="card-title">
-            <span>{nickName.toUpperCase()}</span> 
-            <div class="badge bg-green-400 text-white text-xs">28 Days Left</div> 
-        </h2>
-        <div class="text-[10px] -mt-2">({fullName.toWellFormed()})</div>
-        <div> {phoneNumber} </div>
-        <div class="card-actions justify-end">
-            <button class="mt-5 btn btn-primary"
-            >Edit</button>
-
-            <button class="mt-5 btn btn-primary"
-            >Renew</button>
-        </div>
-    </div>
-
-</div> -->
 <div class="w-full">
 <form onsubmit={handleSubmit} class="flex flex-col gap-5 mx-auto">
     {#if step === 1}
@@ -261,12 +268,13 @@
                             type="tel" 
                             id="phonenumber" 
                             class="text-black w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                            bind:value={phoneNumber}
+                            value={phoneNumber}
+                            oninput={handlePhoneInput}
                             placeholder="+62 877 2247 9025"
                             required
                         />
                         <button type="button"
-                        onclick={sendSMS(phoneNumber, nickName, new Date(), 'test')}
+                        onclick={sendSMS(rawPhone, nickName, new Date(), 'test')}
                         class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-medium rounded-md border border-purple-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!phoneNumber.trim() || phoneNumber.trim().length < 10}
                         > Test</button>
@@ -318,7 +326,7 @@
             onclick={prevStep}
             class="w-full md:w-auto px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-           ← Back to Step 2 
+           ← Back to Step 1 
         </button>
     </div>
     <div class="pt-4 border-t border-gray-100">
@@ -333,6 +341,41 @@
     </div>
     {/if}
     {#if step === 3}
+<div class="card card-side bg-black shadow-sm mb-5 w-full">
+    <figure class="p-4">
+        <div class="avatar">
+            <div class="w-24 rounded-xl">
+                {#if photo}
+                <img
+                    class="aspect-square object-cover"
+                    src={URL.createObjectURL(photo)}
+                    alt='Profile preview'/>
+                {:else}
+                <div class="bg-gray-400 w-24 h-24 rounded-xl flex items-center justify-center">
+                    <span class="text-gray-500">Upload Photo!</span>
+                </div>
+                {/if} 
+                
+            </div>
+        </div>
+    </figure>
+    <div class="card-body">
+        <h2 class="card-title">
+            <span>{nickName.toUpperCase()}</span> 
+            <div class="badge bg-green-400 text-white text-xs">28 Days Left</div> 
+        </h2>
+        <div class="text-[10px] -mt-2">({fullName.toWellFormed()})</div>
+        <div> {phoneNumber} </div>
+        <div class="card-actions justify-end">
+            <button class="mt-5 btn btn-primary"
+            >Edit</button>
+
+            <button class="mt-5 btn btn-primary"
+            >Renew</button>
+        </div>
+    </div>
+
+</div>
     <div >
         <div >
             <label for="paymentmethod">Payment Method</label>
