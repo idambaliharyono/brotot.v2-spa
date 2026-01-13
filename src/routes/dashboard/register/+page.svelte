@@ -3,12 +3,14 @@
 	import { sendSMS, supabase, uploadToCloudinary } from "$lib/helper";
 	import { registerSchema } from "$lib/schemas/registerSchemas";
 	import { pageTitle } from "$lib/stores/title";
+	import { Calendar, DateField, DatePicker } from "bits-ui";
+	import { Calendar1Icon } from "lucide-svelte";
 	import { onMount } from "svelte";
 
     let nickName = $state('');
     let fullName = $state('');
     let gender = $state('');
-    let birthdate = $state('');
+    let birthdate = $state(null);
     let rawPhone = $state('')
     let phoneNumber = $state('');
     let medicalInfo = $state('');
@@ -165,6 +167,8 @@
         phoneNumber = rawPhone ? `+${rawPhone}` : ''
     })
 
+    let isOpen = $state(false)
+
 </script>
 
 <!-- progress step visual -->
@@ -295,29 +299,55 @@
     </div>
     {/if}
     {#if step === 2}
-    <div class="form-field">
-        <label  for="birthdate">Birth Date</label>
-        <input class="text-black" type="date" id="birthdate" bind:value={birthdate} required>
+
+<!-- personal info group   -->
+    
+    <div class="flex justify-between gap-5">
+        <div class="form-field">
+            <label  for="birthdate">Birth Date</label>
+            <input class="text-black p-2 rounded-xl"
+            type="date"
+            id="birthdate"
+            bind:value={birthdate}
+            placeholder="MM/DD/YYY"
+            required>
+            <p>format: MM/DD/YYYY</p>
+        </div>
+        <div class="form-field mt-5">
+            <label>
+                <input type="radio" id="gender" value="Male" bind:group={gender}/>Male
+            </label>
+            <label>
+                <input type="radio" id="gender" value="Female" bind:group={gender}/>Female
+            </label>
+        </div>
     </div>
     <div class="form-field">
-        <label>
-            <input type="radio" id="gender" value="Male" bind:group={gender}/>Male
-        </label>
-        <label>
-            <input type="radio" id="gender" value="Female" bind:group={gender}/>Female
-        </label>
+        <label>Medical info</label>
+        <input type="text" 
+        class="p2 rounded-xl"
+        id="medicalinfo" 
+        bind:value={medicalInfo} 
+        placeholder="Sehat" required>
     </div>
-    <div >
-        <div >
-            <input type="text" id="medicalinfo" bind:value={medicalInfo} placeholder="Sehat" required>
-        </div>
-        <div >
-            <input type="text" id="fitnessgoal" bind:value={fitnessGoal} placeholder="Brotot" required>
-        </div>
+    <div class="form-field">
+        <label>Medical info</label>
+        <input type="text" 
+        class="p2 rounded-xl"
+        id="fitnessgoal" 
+        bind:value={fitnessGoal} 
+        placeholder="Brotot" 
+        required>
     </div>
     <div class="form-field">
         <label for="workouttime">Prefered Workout Time</label>
-        <input type="text" id="workouttime" bind:value={preferedWorkoutTime} placeholder="Morning" required>
+        <input 
+        type="text" 
+        class="p2 rounded-xl"
+        id="workouttime" 
+        bind:value={preferedWorkoutTime} 
+        placeholder="Morning" 
+        required>
     </div>
 
     <div class="pt-4 border-gray-100">
