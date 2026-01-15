@@ -29,7 +29,7 @@ export interface Member {
 	phone_number: string;
 	medical_info: string;
 	fitness_goal: string;
-	prefered_workout: 'morning' | 'noon' | 'afternoon' | 'dusk' | 'night';
+	prefered_workout: 'morning' | 'evening' | 'afternoon' | 'flexible' | 'night';
 	photo_url: string;
 }
 

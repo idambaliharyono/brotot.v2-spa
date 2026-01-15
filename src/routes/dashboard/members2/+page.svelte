@@ -9,6 +9,7 @@
 	import EditModal from "./EditModal.svelte";
 	import { onMount } from "svelte";
 	import { pageTitle } from "$lib/stores/title";
+	import Navbar from "$lib/components/Navbar.svelte";
 
 
 
@@ -97,10 +98,11 @@
     return filteredByColor
     })
 </script>
-
-
-
+<Navbar>
     <MemberNavigation bind:search bind:memberColor/>
+</Navbar>
+
+
     {#if Object.keys($MembershipStatus).length > 0}
        <div>
     <div class="grid grid-cols-2 lg:grid-cols-3 justify-center place-items-center gap-1">

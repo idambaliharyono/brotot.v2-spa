@@ -82,7 +82,7 @@ $effect(()=>{
   };
 })
 </script>
-  <Navbar {title} {template} /> 
+  <!-- <Navbar {title} {template} />  -->
 
 
 <!-- <div class="drawer lg:drawer-open">
